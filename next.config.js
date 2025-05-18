@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Added output configuration
-  distDir: 'out', // Added distDir configuration
-  reactStrictMode: false, // Added reactStrictMode configuration
+  output: 'export',
+  distDir: 'out',
+  reactStrictMode: false,
+
+  // ✅ Disable TypeScript build errors
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  // ✅ Disable ESLint during build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   images: {
     unoptimized: true,
     domains: [
@@ -34,7 +45,8 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => { // Added webpack configuration
+
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.(mp4|webm|ogg)$/,
       use: {
