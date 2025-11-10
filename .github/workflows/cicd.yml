@@ -1,0 +1,69 @@
+name: CI/CD: Build → ECR → Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  ECR_REPO: todo-api
+  AWS_REGION: ap-south-1
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+jobs:
+  build_and_push:
+    name: Build and push to ECR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          region: ${{ secrets.AWS_REGION }}
+
+      - name: Build Docker image
+        run: |
+          IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${GITHUB_SHA::8}
+          docker build -t ${IMAGE} .
+          docker images
+
+      - name: Push Docker image to ECR
+        run: |
+          IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${GITHUB_SHA::8}
+          docker push ${IMAGE}
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+
+  deploy:
+    name: SSH Deploy to EC2
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH client
+        run: sudo apt-get update -y && sudo apt-get install -y openssh-client
+
+      - name: Add private SSH key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SSH
+        env:
+          REGION: ${{ secrets.AWS_REGION }}
+          ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          REPO: todo-api
+        run: |
+          IMAGE=${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/${REPO}:${GITHUB_SHA::8}
+          echo "Deploying image: $IMAGE"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            set -e
+            sudo systemctl start docker
+            aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com
+            docker stop todo-api || true
+            docker rm todo-api || true
+            docker pull ${IMAGE}
+            docker run -d --name todo-api -p 3000:3000 ${IMAGE}
+EOF
