@@ -1,4 +1,3 @@
-```tsx
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,7 +6,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from '@/components/ui/card';
 import { examInfo, domains } from '@/data/examData';
 
@@ -19,7 +18,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
       
-      {/* Header */}
       <div className="mb-8 text-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,9 +40,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
         </p>
       </div>
 
-      {/* Exam Information Card */}
       <Card className="w-full max-w-3xl shadow-lg">
-        
         <CardHeader>
           <CardTitle>Exam Information</CardTitle>
 
@@ -52,18 +48,15 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
             Please review the exam details before starting
           </CardDescription>
 
-          {/* Owner Name */}
           <p className="text-sm font-medium text-gray-700">
-            Owned & Managed by Nagesh Singh
+            Owned &amp; Managed by Nagesh Singh
           </p>
         </CardHeader>
 
         <CardContent>
           <div className="grid gap-6">
 
-            {/* Basic Exam Information */}
             <div className="grid grid-cols-2 gap-4">
-              
               <div>
                 <h3 className="font-medium text-sm text-gray-500">
                   Duration
@@ -90,10 +83,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
                   {examInfo.passingScore}%
                 </p>
               </div>
-
             </div>
 
-            {/* Exam Domains */}
             <div>
               <h3 className="font-medium text-sm text-gray-500 mb-2">
                 Exam Domains
@@ -115,7 +106,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
               </div>
             </div>
 
-            {/* Exam Guidelines */}
             <div>
               <h3 className="font-medium text-sm text-gray-500 mb-2">
                 Exam Guidelines
@@ -135,7 +125,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
                 </li>
 
                 <li>
-                  Use the Review & Submit button when you're ready to finish
+                  Use the Review &amp; Submit button when you're ready to finish
                 </li>
 
                 <li>
@@ -147,34 +137,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
           </div>
         </CardContent>
 
-        {/* Start Exam Button */}
         <CardFooter className="justify-end">
-          <Button
-            size="lg"
-            onClick={onStartExam}
-          >
+          <Button size="lg" onClick={onStartExam}>
             Start Exam
           </Button>
         </CardFooter>
-
       </Card>
     </div>
   );
 };
 
 export default WelcomeScreen;
-```
-
-### Then on GitHub
-
-After replacing the file:
-
-**Commit changes → Jenkins → Build Now**
-
-Then check:
-
-```text
-http://13.202.84.27:8081
-```
-
-You should see **Owned & Managed by Nagesh Singh** on the landing page.
