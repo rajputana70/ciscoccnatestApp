@@ -49,7 +49,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStartExam }) => {
           </CardDescription>
 
           <p className="text-sm font-medium text-gray-700">
-            Owned &amp; Managed by Nagesh Singh & Prashant Singh
+            Owned &amp; Managed by Nagesh Singh & Prashant Singh yes bhai 
           </p>
         </CardHeader>
 
