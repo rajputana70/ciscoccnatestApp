@@ -13,7 +13,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {!lests-examStarted ? (
+      {!examStarted ? (
         <WelcomeScreen onStartExam={handleStartExam} />
       ) : (
         <ExamContainer />
